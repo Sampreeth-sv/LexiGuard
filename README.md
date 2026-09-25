@@ -21,7 +21,7 @@ Ordinary individuals and businesses facing contracts, leases, NDAs, or terms of 
 ## 2. Core Capabilities
 
 - **Document Understanding & Overview**: Deterministic clause segmentation, page mapping, entity/date extraction, and executive summaries.
-- **Risk & Attention Signals**: Configurable 17-category risk detection engine highlighting asymmetric terms, hidden fees, automatic renewals, and liability caps.
+- **Risk & Attention Signals**: Configurable 33 deterministic attention/risk detection rules across multiple categories highlighting asymmetric terms, hidden fees, automatic renewals, and liability caps.
 - **Clause Relationships**: Automatic detection of reciprocal, dependent, and asymmetric clause pairs across documents.
 - **Financial & Compensation Intelligence**: Extraction and analysis of payment schedules, salary, bonus structures, invoices, and late fee penalties.
 - **Evidence-Grounded Q&A**: Question answering constrained strictly to document text, backed by citation validation and visual grounding status indicators.
@@ -47,7 +47,7 @@ graph TD
     A[User Uploads Document] --> B[FastAPI Backend]
     B --> C[Ingestion Engine: PyMuPDF / docx / txt]
     C --> D[Clause Segmentation & Structure Detection]
-    D --> E[Deterministic Risk Engine: 17 Categories]
+    D --> E[Deterministic Risk Engine: 33 Deterministic Rules]
     D --> F[In-Memory TF-IDF & Lexical Search Index]
     F --> G[On-Demand Gemini 3.6 Flash Layer]
     G --> H[Citation Validator & Grounding Evaluator]

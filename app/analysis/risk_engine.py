@@ -1,6 +1,6 @@
 """
 Deterministic risk signal detection engine for LexiGuard.
-Runs 17-category regex pattern rules against clause text.
+Runs 33 deterministic attention/risk detection rules against clause text.
 Zero LLM calls. Fully deterministic and testable.
 """
 from typing import List
