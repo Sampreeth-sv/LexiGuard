@@ -2033,9 +2033,6 @@ async function handleFiles(files) {
 // ── Initialization & Event Listeners ─────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Initialize static translations
-  applyTranslations();
-
   // Route initial view from URL hash immediately
   handleRouteFromHash();
 
