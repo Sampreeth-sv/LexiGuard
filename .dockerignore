@@ -1,0 +1,18 @@
+# Docker build context exclusions
+.env
+*.db
+*.sqlite
+*.sqlite3
+.git
+.gitignore
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+venv/
+.venv/
+tmp_uploads/
+scratch/
+pytestdebug.log
+.idea/
+.vscode/

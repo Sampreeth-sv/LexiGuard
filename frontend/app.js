@@ -146,10 +146,6 @@ function t(key) {
   return dict[key] || key;
 }
 
-function applyTranslations() {
-  state.currentLanguage = 'en';
-}
-
 // Prevents hashchange re-entry when navigate() itself changes the hash
 let _suppressNextHashChange = false;
 
@@ -333,7 +329,6 @@ const els = {
   docsGrid: document.getElementById('documents-grid'),
   workspaceGrid: document.getElementById('workspace-documents-grid'),
   workspaceTotalDocs: document.getElementById('workspace-total-docs'),
-  globalLangSelect: document.getElementById('global-lang-select'),
   globalLoading: document.getElementById('global-loading'),
   srAnnouncer: document.getElementById('sr-announcer'),
   srAlert: document.getElementById('sr-alert'),
