@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LexiGuard - Evidence-grounded AI legal document assistant. Understand your documents, see the risks, ask better questions.">
+  <title>LexiGuard — Understand your documents. See the risks. Ask better questions.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="sr-only focusable-skip">Skip to main content</a>
+
+  <!-- Screen Reader Announcements -->
+  <div id="sr-announcer" class="sr-only" aria-live="polite"></div>
+  <div id="sr-alert" class="sr-only" aria-live="assertive" role="alert"></div>
+
+  <!-- Navigation -->
+  <nav role="navigation" aria-label="Main navigation" class="top-nav">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="url(#logo-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <defs>
+            <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6366f1" />
+              <stop offset="100%" stop-color="#8b5cf6" />
+            </linearGradient>
+          </defs>
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <span class="logo-text">LexiGuard</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#/dashboard" class="nav-link active" data-view="dashboard" id="nav-dashboard">Dashboard</a></li>
+        <li><a href="#/workspace" class="nav-link" data-view="workspace" id="nav-workspace">Workspace</a></li>
+        <li><a href="#/analyze" class="nav-link" data-view="analyze" id="nav-analyze">Analyze</a></li>
+        <li><a href="#/ask" class="nav-link" data-view="ask" id="nav-ask">Ask</a></li>
+        <li><a href="#/compare" class="nav-link" data-view="compare" id="nav-compare">Compare</a></li>
+        <li><a href="#/prepare" class="nav-link" data-view="prepare" id="nav-prepare">Prepare</a></li>
+      </ul>
+      <div class="nav-controls" style="display: flex; align-items: center; gap: 12px;">
+        <div class="nav-status" aria-label="System status">
+          <span class="status-dot" id="genai-status-dot"></span>
+          <span class="status-text" id="genai-status-text">AI Ready</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Global Loading Overlay -->
+  <div id="global-loading" class="loading-overlay hidden">
+    <div class="spinner" aria-hidden="true"></div>
+    <p id="loading-message">Loading...</p>
+  </div>
+
+  <main id="main-content">
+    
+    <!-- DASHBOARD VIEW -->
+    <section id="dashboard" class="view active-view">
+      <header class="hero">
+        <h1 class="hero-title">Understand your legal documents</h1>
+        <p class="hero-subtitle">See the risks. Ask better questions. Stay protected.</p>
+      </header>
+
+      <div class="disclaimer-banner" role="complementary">
+        <span class="disclaimer-icon" aria-hidden="true">⚠️</span>
+        <p>This tool provides document-based information and preparation assistance. It is not a substitute for advice from a qualified legal professional.</p>
+      </div>
+
+      <div class="upload-section">
+        <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Upload document area">
+          <input type="file" id="file-upload" accept=".pdf,.docx,.txt" class="sr-only" aria-label="Choose a file to upload">
+          <div class="upload-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </div>
+          <h2 class="upload-title">Drag & drop your document here</h2>
+          <p class="upload-hint">Supports PDF, DOCX, TXT up to 10MB</p>
+          <button class="btn btn-primary mt-4" id="upload-btn-trigger">Browse Files</button>
+        </div>
+      </div>
+
+      <div class="recent-documents mt-6">
+        <div class="section-header">
+          <h2>Recent Documents</h2>
+        </div>
+        <div class="documents-grid" id="documents-grid">
+          <!-- Document cards will be injected here -->
+          <p class="empty-state">No recent documents found.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE VIEW -->
+    <section id="workspace" class="view hidden">
+      <header class="section-header">
+        <h1>Workspace</h1>
+        <p>Manage all uploaded legal documents, review analysis metrics, or delete files.</p>
+      </header>
+
+      <div class="workspace-summary-bar" style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+        <div class="stat-pill" style="padding: 10px 16px; font-size: 14px;"><span class="stat-value" id="workspace-total-docs" style="font-weight: 700; color: #8b5cf6;">0</span> Total Documents</div>
+      </div>
+
+      <div class="documents-library">
+        <div class="section-header">
+          <h2>Documents Library</h2>
+        </div>
+        <div class="documents-grid" id="workspace-documents-grid">
+          <!-- Workspace document cards will be injected here -->
+          <p class="empty-state">No documents in workspace. Upload a document from Dashboard to begin.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANALYZE VIEW -->
+    <section id="analyze" class="view hidden">
+      <!-- Empty state when no document is selected -->
+      <div id="analyze-empty-state" class="empty-state-view hidden">
+        <div class="empty-state-card">
+          <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--color-accent-primary)" stroke-width="1.5" fill="none">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <h2>No document selected</h2>
+          <p>Choose a document from Workspace or Dashboard to begin analysis.</p>
+          <button class="btn btn-primary mt-4" id="btn-empty-go-dashboard">Go to Workspace</button>
+        </div>
+      </div>
+
+      <!-- Error state when document is invalid or returns 404 -->
+      <div id="analyze-error-state" class="empty-state-view hidden">
+        <div class="empty-state-card">
+          <h2 id="analyze-error-title">Document Not Found</h2>
+          <p id="analyze-error-msg">The requested document could not be found or has been deleted.</p>
+          <button class="btn btn-primary mt-4" id="btn-error-go-dashboard">Back to Workspace</button>
+        </div>
+      </div>
+
+      <div id="analyze-main-content">
+        <header class="document-header">
+        <div class="header-content">
+          <h1 id="doc-title">Document Name</h1>
+          <div class="doc-meta" id="doc-meta">
+            <span>0 Pages</span> • <span>0 Clauses</span>
+          </div>
+        </div>
+        <div class="summary-stats-bar" id="summary-stats">
+          <div class="stat-pill"><span class="stat-value" id="stat-attention">0</span> <span>Attention Items</span></div>
+          <div class="stat-pill"><span class="stat-value" id="stat-dates">0</span> <span>Important Dates</span></div>
+          <div class="stat-pill"><span class="stat-value" id="stat-obligations">0</span> <span>Key Obligations</span></div>
+        </div>
+      </header>
+
+      <div class="analyze-layout">
+        <aside class="document-map">
+          <h3>Document Map</h3>
+          <ul id="doc-map-tree" class="map-tree">
+            <!-- Map injected here -->
+          </ul>
+        </aside>
+
+        <div class="main-content-area">
+          <div class="tabs-container">
+            <div class="tabs" role="tablist" aria-label="Document views">
+              <button role="tab" aria-selected="true" id="tab-overview" aria-controls="panel-overview" class="tab-btn active">Overview</button>
+              <button role="tab" aria-selected="false" id="tab-signals" aria-controls="panel-signals" class="tab-btn">Attention Signals</button>
+              <button role="tab" aria-selected="false" id="tab-relationships" aria-controls="panel-relationships" class="tab-btn">Relationships</button>
+              <button role="tab" aria-selected="false" id="tab-financial" aria-controls="panel-financial" class="tab-btn">Financial & Compensation</button>
+              <button role="tab" aria-selected="false" id="tab-clauses" aria-controls="panel-clauses" class="tab-btn">Clauses</button>
+            </div>
+
+            <!-- Panels -->
+            <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" class="tab-panel active">
+              <div id="dashboard-overview-container" class="dashboard-overview-container">
+                <!-- Document Understanding Dashboard injected here -->
+              </div>
+              <div class="panel-section mt-4">
+                <div class="section-heading-row">
+                  <h2>AI Summary</h2>
+                  <button class="btn btn-secondary btn-sm" id="btn-gen-summary">Generate Summary</button>
+                </div>
+                <div id="summary-content" class="content-box">
+                  <p class="empty-text">Click 'Generate Summary' to get an AI-powered overview of this document.</p>
+                </div>
+              </div>
+              <div class="entities-grid" id="entities-grid">
+                <!-- Extracted entities -->
+              </div>
+            </div>
+
+            <div id="panel-signals" role="tabpanel" aria-labelledby="tab-signals" class="tab-panel hidden">
+              <div class="signals-list" id="signals-list">
+                <!-- Signal cards -->
+              </div>
+            </div>
+
+            <div id="panel-relationships" role="tabpanel" aria-labelledby="tab-relationships" class="tab-panel hidden">
+              <div class="relationships-list" id="relationships-list">
+                <!-- Clause relationship cards -->
+              </div>
+            </div>
+
+            <div id="panel-financial" role="tabpanel" aria-labelledby="tab-financial" class="tab-panel hidden">
+              <div class="financial-list" id="financial-list">
+                <!-- Financial cards -->
+              </div>
+            </div>
+
+            <div id="panel-clauses" role="tabpanel" aria-labelledby="tab-clauses" class="tab-panel hidden">
+              <div class="search-bar">
+                <input type="text" id="clause-search" placeholder="Search document..." aria-label="Search document clauses">
+              </div>
+              <div class="clause-browser" id="clause-browser">
+                <!-- Clauses injected here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div><!-- /#analyze-main-content -->
+    </section>
+
+    <!-- ASK VIEW -->
+    <section id="ask" class="view hidden">
+      <div class="chat-layout">
+        <div class="chat-history" id="chat-history">
+          <div class="chat-empty-state">
+            <svg viewBox="0 0 24 24" width="48" height="48" stroke="var(--color-accent-primary)" stroke-width="1.5" fill="none">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <h2>Ask a question about your document</h2>
+            <p>What are the termination conditions? Are there any hidden fees?</p>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <form id="chat-form" class="chat-form">
+            <input type="text" id="chat-input" placeholder="Type your legal question here..." aria-label="Question input" autocomplete="off" required>
+            <button type="submit" class="btn btn-primary icon-btn" aria-label="Send question">
+              <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPARE VIEW -->
+    <section id="compare" class="view hidden">
+      <header class="section-header">
+        <h1>Compare Documents</h1>
+        <p>Upload a revised version or compare documents for consistency.</p>
+      </header>
+
+      <div class="compare-selectors">
+        <div class="doc-selector">
+          <label for="compare-doc-a">Original Document (Doc A)</label>
+          <select id="compare-doc-a" class="select-input">
+            <option value="">Select a document...</option>
+          </select>
+        </div>
+        <div class="doc-selector">
+          <label for="compare-doc-b">Revised Document (Doc B)</label>
+          <select id="compare-doc-b" class="select-input">
+            <option value="">Select a document...</option>
+          </select>
+        </div>
+        <button id="btn-run-compare" class="btn btn-primary" disabled>Compare Documents</button>
+      </div>
+
+      <div id="compare-results" class="compare-results hidden">
+        <div class="diff-stats">
+          <div class="stat-pill"><span id="diff-added">0</span> <span>Added</span></div>
+          <div class="stat-pill"><span id="diff-removed">0</span> <span>Removed</span></div>
+          <div class="stat-pill"><span id="diff-modified">0</span> <span>Modified</span></div>
+          <div class="stat-pill"><span id="diff-unchanged">0</span> <span>Unchanged</span></div>
+        </div>
+
+        <div class="diff-filters">
+          <button class="filter-btn active" data-filter="all">All Changes</button>
+          <button class="filter-btn" data-filter="added">Added</button>
+          <button class="filter-btn" data-filter="removed">Removed</button>
+          <button class="filter-btn" data-filter="modified">Modified</button>
+        </div>
+
+        <div class="diff-cards-container" id="diff-container">
+          <!-- Diff cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PREPARE VIEW -->
+    <section id="prepare" class="view hidden">
+      <header class="section-header">
+        <h1>Preparation & Review</h1>
+        <div class="header-actions">
+          <button id="btn-gen-checklist" class="btn btn-primary">Generate Legal Review Checklist</button>
+          <button id="btn-copy-checklist" class="btn btn-secondary hidden">Copy to Clipboard</button>
+        </div>
+      </header>
+
+      <div id="checklist-content" class="checklist-content">
+        <div class="empty-state">
+          <p>Click "Generate Legal Review Checklist" to create a custom preparation guide based on this document.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Source Clause Modal -->
+  <dialog id="source-modal" class="modal" aria-labelledby="modal-title">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="modal-title">Source Clause</h2>
+        <button id="modal-close" class="icon-btn close-btn" aria-label="Close source clause">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+      <div class="modal-body">
+        <div class="source-meta">
+          <span id="modal-source-path" class="path-badge"></span>
+          <span id="modal-source-page" class="page-badge"></span>
+        </div>
+        <div id="modal-source-text" class="source-text"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Document Evidence Viewer Modal -->
+  <dialog id="evidence-modal" class="modal modal-large" aria-labelledby="evidence-modal-title">
+    <div class="modal-content evidence-modal-content">
+      <header class="modal-header">
+        <div class="evidence-header-info">
+          <h2 id="evidence-modal-title">Document Evidence Viewer</h2>
+          <span id="evidence-status-badge" class="grounding-badge"></span>
+        </div>
+        <button id="evidence-modal-close" class="icon-btn close-btn" aria-label="Close evidence viewer">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+      <div class="modal-body evidence-modal-body">
+        <!-- Synchronized Evidence Quote Panel -->
+        <div id="evidence-quote-panel" class="evidence-quote-panel">
+          <div class="evidence-panel-meta">
+            <span id="evidence-panel-path" class="path-badge"></span>
+            <span id="evidence-panel-page" class="page-badge"></span>
+          </div>
+          <div id="evidence-panel-quote-box" class="evidence-panel-quote-box">
+            <strong class="quote-label">Cited Evidence Quote:</strong>
+            <blockquote id="evidence-panel-quote-text" class="evidence-quote"></blockquote>
+          </div>
+          <div id="evidence-panel-fallback-msg" class="evidence-fallback-msg hidden"></div>
+        </div>
+
+        <!-- Primary Document Viewer Container (PDF iframe / formatted text view) -->
+        <div id="evidence-viewer-container" class="evidence-viewer-container">
+          <!-- Dynamic viewer element injected by app.js -->
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

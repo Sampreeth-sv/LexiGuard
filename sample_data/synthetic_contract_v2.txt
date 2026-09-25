@@ -1,0 +1,41 @@
+SYNTHETIC DEMONSTRATION CONTRACT
+For LexiGuard Testing and Demonstration Purposes Only
+All parties, names, and terms are entirely fictional.
+
+ARTICLE I - PARTIES
+This Service Agreement ("Agreement") is entered into between TechVentures LLC, a California corporation ("Company") and DataSolutions Inc, a Delaware corporation ("Consultant").
+
+ARTICLE II - PAYMENT
+Section 2.1 Fees. The Company shall pay the Consultant a monthly fee of $12,500 due within 30 days of invoice.
+Section 2.2 Late Payment. Payments not received within 30 days shall accrue interest at the rate of 1.5% per month on the outstanding balance.
+
+ARTICLE III - TERM AND RENEWAL
+Section 3.1 Initial Term. This Agreement shall commence on January 1, 2024 and continue until December 31, 2024.
+Section 3.2 Automatic Renewal. This Agreement shall automatically renew for successive one-year terms unless either party provides written notice of non-renewal at least 60 days prior to the end of the then-current term.
+
+ARTICLE IV - TERMINATION
+Section 4.1 Termination for Cause. Either party may terminate this Agreement upon 30 days written notice if the other party materially breaches this Agreement.
+Section 4.2 Early Termination. If the Consultant terminates this Agreement without cause, the Consultant shall pay a penalty equal to three months fees as liquidated damages.
+
+ARTICLE V - CONFIDENTIALITY
+Section 5.1 Confidential Information. The Consultant agrees to keep all proprietary information and trade secrets of the Company strictly confidential and shall not disclose such information to any third party.
+
+ARTICLE VI - INTELLECTUAL PROPERTY
+Section 6.1 Work Product. All work product, inventions, and deliverables created by the Consultant under this Agreement shall be considered work made for hire and shall be the exclusive property of the Company.
+
+ARTICLE VII - LIABILITY
+Section 7.1 Limitation of Liability. In no event shall either party be liable to the other for any consequential, indirect, incidental, or punitive damages. The aggregate liability of either party shall not exceed the total fees paid in the six months preceding the claim.
+Section 7.2 Indemnification. The Consultant shall indemnify and hold harmless the Company from any claims arising out of the Consultant's performance.
+
+ARTICLE VIII - ARBITRATION
+Section 8.1 Dispute Resolution. Any dispute arising under this Agreement shall be resolved through binding arbitration under the rules of the American Arbitration Association. The parties waive their right to a jury trial and agree that class action claims are not permitted.
+
+ARTICLE IX - GOVERNING LAW
+Section 9.1 Jurisdiction. This Agreement shall be governed by the laws of the State of California.
+
+ARTICLE X - DATA HANDLING
+Section 10.1 Privacy. The Consultant may process personal data and must comply with all GDPR regulations regarding personal data.
+Section 10.2 Data Security. The Consultant shall implement reasonable technical and organizational measures to ensure data security.
+
+ARTICLE XI - GENERAL PROVISIONS
+Section 11.1 Modification. The Company reserves the right to modify the terms of this Agreement at any time at its sole discretion with 14 days notice.
