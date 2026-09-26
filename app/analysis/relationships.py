@@ -403,9 +403,9 @@ class RelationshipEngine:
         )
         return relationships
 
-    def _snippet(self, text: str, pattern: re.Pattern) -> str:
+    def _snippet(self, text: str, pattern: re.Pattern, pre_match: Optional[re.Match] = None) -> str:
         """Extract a clean 150-char snippet around the regex pattern match."""
-        match = pattern.search(text)
+        match = pre_match if pre_match is not None else pattern.search(text)
         if not match:
             return text[:150].strip()
 

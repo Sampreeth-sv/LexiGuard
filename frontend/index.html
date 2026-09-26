@@ -20,8 +20,8 @@
   <!-- Navigation -->
   <nav role="navigation" aria-label="Main navigation" class="top-nav">
     <div class="nav-container">
-      <div class="nav-brand">
-        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="url(#logo-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <a href="#/dashboard" class="nav-brand" aria-label="LexiGuard Home">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="url(#logo-gradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <defs>
             <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#6366f1" />
@@ -31,7 +31,7 @@
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
         </svg>
         <span class="logo-text">LexiGuard</span>
-      </div>
+      </a>
       <ul class="nav-links">
         <li><a href="#/dashboard" class="nav-link active" data-view="dashboard" id="nav-dashboard">Dashboard</a></li>
         <li><a href="#/workspace" class="nav-link" data-view="workspace" id="nav-workspace">Workspace</a></li>
@@ -160,7 +160,7 @@
       </header>
 
       <div class="analyze-layout">
-        <aside class="document-map">
+        <aside class="document-map" aria-label="Document map navigation">
           <h3>Document Map</h3>
           <ul id="doc-map-tree" class="map-tree">
             <!-- Map injected here -->

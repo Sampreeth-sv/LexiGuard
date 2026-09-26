@@ -12,9 +12,13 @@ class RiskRule:
     patterns: List[str]  # raw regex strings
     explanation_template: str  # plain language explanation
     question_template: str  # suggested lawyer question
-    
+    _compiled: List[Pattern] = field(default_factory=list, init=False, repr=False)
+
+    def __post_init__(self):
+        self._compiled = [re.compile(p, re.IGNORECASE) for p in self.patterns]
+
     def get_compiled_patterns(self) -> List[Pattern]:
-        return [re.compile(p, re.IGNORECASE | re.MULTILINE) for p in self.patterns]
+        return self._compiled
 
 AUTO_RENEWAL_001 = RiskRule(
     rule_id="AUTO_RENEWAL_001",
