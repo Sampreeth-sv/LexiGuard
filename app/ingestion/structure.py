@@ -14,32 +14,48 @@ logger = logging.getLogger(__name__)
 
 # Article patterns: ARTICLE I, ARTICLE 1, Article I - PARTIES
 ARTICLE_PATTERN = re.compile(
-    r'^(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\.?\s*[-—]?\s*(.*)$',
-    re.MULTILINE
+    r'^(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\.?\s*[-—]?\s*(.*)$'
 )
 
 # Section patterns: Section 1.2, Section 1.2 Heading
 SECTION_PATTERN = re.compile(
-    r'^(?:Section|SECTION|SEC\.|Sec\.)\s*(\d+(?:\.\d+)*)\.?\s*(.*)$',
-    re.MULTILINE
+    r'^(?:Section|SECTION|SEC\.|Sec\.)\s*(\d+(?:\.\d+)*)\.?\s*(.*)$'
 )
 
 # Numbered patterns: 1.1 Title or 1.1.2 Title
 NUMBERED_PATTERN = re.compile(
-    r'^(\d+(?:\.\d+){1,3})\.?\s+([A-Z][^\n]{0,80})$',
-    re.MULTILINE
+    r'^(\d+(?:\.\d+){1,3})\.?\s+([A-Z][^\n]{0,80})$'
 )
 
 # ALL CAPS HEADINGS (at least 4 chars, no lowercase)
 CAPS_HEADING_PATTERN = re.compile(
-    r'^([A-Z][A-Z\s\-]{3,60})$',
-    re.MULTILINE
+    r'^([A-Z][A-Z\s\-]{3,60})$'
 )
 
 # Markdown headings: # Heading or ## Heading (emitted by docx_parser for Word heading styles)
 MARKDOWN_HEADING_PATTERN = re.compile(
     r'^(#{1,6})\s+(.+)$'
 )
+
+CLAUSE_TYPE_KEYWORDS = [
+    ('termination', ('terminat', 'cancel', 'exit the agreement')),
+    ('renewal', ('renew', 'auto-renew', 'evergreen')),
+    ('indemnity', ('indemn', 'hold harmless')),
+    ('liability', ('liabilit', 'liable', 'damages')),
+    ('arbitration', ('arbitrat', 'dispute resolution')),
+    ('jurisdiction', ('jurisdict', 'governing law', 'choice of law')),
+    ('confidentiality', ('confidential', 'non-disclosure', 'nda', 'proprietary')),
+    ('ip', ('intellectual property', 'copyright', 'work made for hire', 'assigns all rights')),
+    ('payment', ('payment', 'fee', 'compensat', 'invoice', 'remunerat')),
+    ('privacy', ('privacy', 'personal data', 'data protection', 'gdpr')),
+    ('modification', ('modif', 'amend', 'change the terms')),
+    ('warranty', ('warrant', 'representat', 'as is', 'merchantab')),
+    ('non_compete', ('compete', 'solicit', 'non-competition')),
+    ('notice', ('notice', 'notification', 'written notice')),
+    ('obligation', ('obligat', 'responsibil', 'shall', 'must')),
+    ('parties', ('parties', 'between', 'hereinafter')),
+    ('definitions', ('definit', 'means', 'refers to')),
+]
 
 
 def detect_clause_type(text: str, heading: str) -> str:
@@ -50,42 +66,9 @@ def detect_clause_type(text: str, heading: str) -> str:
     Returns a string category name.
     """
     combined = f"{heading} {text}".lower()
-
-    if any(k in combined for k in ['terminat', 'cancel', 'exit the agreement']):
-        return 'termination'
-    if any(k in combined for k in ['renew', 'auto-renew', 'evergreen']):
-        return 'renewal'
-    if any(k in combined for k in ['indemn', 'hold harmless']):
-        return 'indemnity'
-    if any(k in combined for k in ['liabilit', 'liable', 'damages']):
-        return 'liability'
-    if any(k in combined for k in ['arbitrat', 'dispute resolution']):
-        return 'arbitration'
-    if any(k in combined for k in ['jurisdict', 'governing law', 'choice of law']):
-        return 'jurisdiction'
-    if any(k in combined for k in ['confidential', 'non-disclosure', 'nda', 'proprietary']):
-        return 'confidentiality'
-    if any(k in combined for k in ['intellectual property', 'copyright', 'work made for hire', 'assigns all rights']):
-        return 'ip'
-    if any(k in combined for k in ['payment', 'fee', 'compensat', 'invoice', 'remunerat']):
-        return 'payment'
-    if any(k in combined for k in ['privacy', 'personal data', 'data protection', 'gdpr']):
-        return 'privacy'
-    if any(k in combined for k in ['modif', 'amend', 'change the terms']):
-        return 'modification'
-    if any(k in combined for k in ['warrant', 'representat', 'as is', 'merchantab']):
-        return 'warranty'
-    if any(k in combined for k in ['compete', 'solicit', 'non-competition']):
-        return 'non_compete'
-    if any(k in combined for k in ['notice', 'notification', 'written notice']):
-        return 'notice'
-    if any(k in combined for k in ['obligat', 'responsibil', 'shall', 'must']):
-        return 'obligation'
-    if any(k in combined for k in ['parties', 'between', 'hereinafter']):
-        return 'parties'
-    if any(k in combined for k in ['definit', 'means', 'refers to']):
-        return 'definitions'
-
+    for cat, keywords in CLAUSE_TYPE_KEYWORDS:
+        if any(k in combined for k in keywords):
+            return cat
     return 'general'
 
 

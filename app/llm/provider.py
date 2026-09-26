@@ -105,6 +105,9 @@ class LLMProvider(ABC):
         ...
 
 
+
+
+
 class GeminiProvider(LLMProvider):
     """Google Gemini implementation of LLMProvider."""
 
@@ -157,6 +160,7 @@ class GeminiProvider(LLMProvider):
         except Exception as e:
             err_name = type(e).__name__
             err_str = str(e)
+
             if 'ResourceExhausted' in err_name or '429' in err_str or 'quota' in err_str.lower():
                 logger.warning("Gemini answer_question: API quota exhausted (429). Retry after rate-limit window.")
                 return QAResponse(
@@ -167,7 +171,7 @@ class GeminiProvider(LLMProvider):
                     grounding_status=GroundingStatus.INSUFFICIENT_EVIDENCE,
                     abstained=True,
                 )
-            logger.error("Gemini answer_question error: %s", err_name)
+            logger.error("Gemini answer_question error: %s: %s", type(e).__name__, str(e))
             return QAResponse(
                 answer="AI analysis is temporarily unavailable. Please try again later.",
                 grounding_status=GroundingStatus.INSUFFICIENT_EVIDENCE,

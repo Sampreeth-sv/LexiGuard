@@ -49,7 +49,14 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> List[str]:
-        return [origin.strip() for origin in self.cors_origins.split(',') if origin.strip()]
+        raw_list = [origin.strip() for origin in self.cors_origins.split(',') if origin.strip()]
+        valid_origins = []
+        for orig in raw_list:
+            if orig == '*':
+                valid_origins.append(orig)
+            elif orig.startswith(('http://', 'https://')):
+                valid_origins.append(orig.rstrip('/'))
+        return valid_origins if valid_origins else ['http://localhost:8000', 'http://127.0.0.1:8000']
     
     @property
     def genai_available(self) -> bool:

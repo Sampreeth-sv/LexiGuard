@@ -44,6 +44,13 @@ def sanitize_filename(filename: str) -> str:
     return name[:100] if name else 'document'
 
 
+def validate_doc_id(doc_id: str) -> str:
+    """Validate document ID format to prevent path traversal or injection."""
+    if not doc_id or os.path.basename(doc_id) != doc_id or '/' in doc_id or '\\' in doc_id or '..' in doc_id:
+        raise HTTPException(status_code=400, detail="Invalid document ID format.")
+    return doc_id
+
+
 def validate_extension(filename: str) -> str:
     """Validate file extension. Returns extension string or raises HTTPException."""
     ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
@@ -234,6 +241,7 @@ def get_document_file(doc_id: str):
     Serve the original uploaded document file (PDF, DOCX, TXT) for inline browser viewing.
     Returns 404 if document or file does not exist.
     """
+    validate_doc_id(doc_id)
     doc_data = get_document(doc_id)
     if not doc_data:
         raise HTTPException(status_code=404, detail="Document not found.")

@@ -1428,7 +1428,19 @@ function switchTab(tabId) {
   });
 }
 
+let _lastActiveModalTrigger = null;
+
+function closeActiveModal(modalEl) {
+  if (modalEl && modalEl.open) {
+    modalEl.close();
+    if (_lastActiveModalTrigger && typeof _lastActiveModalTrigger.focus === 'function') {
+      try { _lastActiveModalTrigger.focus(); } catch (_) {}
+    }
+  }
+}
+
 function openSourceModal(path, page, text) {
+  _lastActiveModalTrigger = document.activeElement;
   document.getElementById('modal-source-path').textContent = path || 'Clause Source';
   document.getElementById('modal-source-page').textContent = `Page ${page || 1}`;
   document.getElementById('modal-source-text').textContent = text || '';
@@ -1437,6 +1449,7 @@ function openSourceModal(path, page, text) {
 
 async function openEvidenceViewer(docId, clauseId, fallbackPage = 1, evidenceQuote = '', sectionPath = 'Clause') {
   if (!els.evidenceModal) return;
+  _lastActiveModalTrigger = document.activeElement;
 
   // Reset modal elements
   if (els.evidenceStatusBadge) {
@@ -2113,18 +2126,28 @@ document.addEventListener('DOMContentLoaded', () => {
   els.btnGenChecklist.addEventListener('click', handleGenerateChecklist);
   els.btnCopyChecklist.addEventListener('click', handleCopyChecklist);
 
-  // Modal Close Listeners
-  els.modalCloseBtn.addEventListener('click', () => els.sourceModal.close());
-  els.sourceModal.addEventListener('click', (e) => {
-    if (e.target === els.sourceModal) els.sourceModal.close();
-  });
-
-  if (els.evidenceModalClose && els.evidenceModal) {
-    els.evidenceModalClose.addEventListener('click', () => els.evidenceModal.close());
-    els.evidenceModal.addEventListener('click', (e) => {
-      if (e.target === els.evidenceModal) els.evidenceModal.close();
+  // Modal Close Listeners & Focus Restoration
+  if (els.modalCloseBtn && els.sourceModal) {
+    els.modalCloseBtn.addEventListener('click', () => closeActiveModal(els.sourceModal));
+    els.sourceModal.addEventListener('click', (e) => {
+      if (e.target === els.sourceModal) closeActiveModal(els.sourceModal);
     });
   }
+
+  if (els.evidenceModalClose && els.evidenceModal) {
+    els.evidenceModalClose.addEventListener('click', () => closeActiveModal(els.evidenceModal));
+    els.evidenceModal.addEventListener('click', (e) => {
+      if (e.target === els.evidenceModal) closeActiveModal(els.evidenceModal);
+    });
+  }
+
+  // Escape Key Handler for Active Dialog Modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (els.sourceModal && els.sourceModal.open) closeActiveModal(els.sourceModal);
+      if (els.evidenceModal && els.evidenceModal.open) closeActiveModal(els.evidenceModal);
+    }
+  });
 
   // Upload Zone Drag & Drop
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
